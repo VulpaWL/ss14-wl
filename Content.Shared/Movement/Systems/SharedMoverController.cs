@@ -45,6 +45,7 @@ public abstract partial class SharedMoverController : VirtualController
     [Dependency] private SharedContainerSystem _container = default!;
     [Dependency] private SharedMapSystem _mapSystem = default!;
     [Dependency] private SharedGravitySystem _gravity = default!;
+    [Dependency] private SharedSwimSystem _swim = default!; //WLSwiming
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private TagSystem _tags = default!;
 
@@ -270,6 +271,19 @@ public abstract partial class SharedMoverController : VirtualController
             }
 
             accel = moveSpeedComponent?.WeightlessAcceleration ?? MovementSpeedModifierComponent.DefaultWeightlessAcceleration;
+
+            //WLSwiming - start
+            // Вода одинаково тормозит ВСЕХ существ, находящихся в ней — как тех, кто умеет плавать,
+            // так и тех, кто не умеет. Коэффициент сопротивления берётся из SwimmableMapComponent.WaterResistance
+            // и применяется ко всему, что попало на карту с этим компонентом.
+            // Разница между пловцами и не-пловцами только в том, что пловцы получают
+            // CanWeightlessMove = true (через OnSwimmerCanWeightlessMove) и модификаторы скорости/ускорения.
+            // Используем TryGetWaterResistance — он совмещает проверку и получение коэффициента.
+            if (_swim.TryGetWaterResistance(xform) is { } waterResistance)
+            {
+                friction = waterResistance;
+            }
+            //WLSwiming - end
         }
         else
         {
