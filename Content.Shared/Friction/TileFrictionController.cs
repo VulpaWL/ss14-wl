@@ -106,12 +106,6 @@ namespace Content.Shared.Friction
                 friction = Math.Max(_minDamping, friction);
 
                 //WLSwiming - start
-                // Если сущность находится в воде, переопределяем трение на коэффициент
-                // сопротивления воды из SwimmableMapComponent. Это обеспечивает торможение
-                // для всех физических тел в воде, в т.ч. для мёртвых/динамических тел,
-                // которые не обрабатываются в SharedMoverController.HandleMobMovement.
-                // Используем TryGetWaterResistance — он совмещает проверку "в воде ли"
-                // и получение коэффициента в одном проходе, избегая дублирующего TryComp.
                 if (_swim.TryGetWaterResistance(xform) is { } waterResistance)
                 {
                     friction = waterResistance;

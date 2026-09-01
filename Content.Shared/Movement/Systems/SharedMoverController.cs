@@ -273,12 +273,6 @@ public abstract partial class SharedMoverController : VirtualController
             accel = moveSpeedComponent?.WeightlessAcceleration ?? MovementSpeedModifierComponent.DefaultWeightlessAcceleration;
 
             //WLSwiming - start
-            // Вода одинаково тормозит ВСЕХ существ, находящихся в ней — как тех, кто умеет плавать,
-            // так и тех, кто не умеет. Коэффициент сопротивления берётся из SwimmableMapComponent.WaterResistance
-            // и применяется ко всему, что попало на карту с этим компонентом.
-            // Разница между пловцами и не-пловцами только в том, что пловцы получают
-            // CanWeightlessMove = true (через OnSwimmerCanWeightlessMove) и модификаторы скорости/ускорения.
-            // Используем TryGetWaterResistance — он совмещает проверку и получение коэффициента.
             if (_swim.TryGetWaterResistance(xform) is { } waterResistance)
             {
                 friction = waterResistance;
